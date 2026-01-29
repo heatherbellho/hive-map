@@ -429,6 +429,7 @@ button.save:hover {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS/Android */
+  align-self: stretch;
 }
 
 }
