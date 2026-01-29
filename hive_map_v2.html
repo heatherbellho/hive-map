@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/16_favicon-fudge.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#719454">
+
+  <title>Hive Map with Inspection Data</title>
+
+  <!-- Fabric.js must load before any module that uses it -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+
+  <!-- Storage must load before everything else -->
+  <script src="js/storage.js"></script>
+
+  <!-- Core modules -->
+  <script src="js/utils.js"></script>
+  <script src="js/apiaries.js"></script>
+  <script src="js/hives.js"></script>
+  <script src="js/modals.js"></script>
+  <script src="js/status.js"></script>
+  <script src="js/notes.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/stats.js"></script>
+
+  <!-- Canvas subsystem -->
+  <script src="js/canvas.js"></script>
+
+  <!-- App orchestrator (must be last) -->
+  <script src="js/app.js"></script>
+
+  <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+
+<div id="toolbar">
+
+  <!-- LEFT: context + primary actions + counts -->
+  <div class="toolbar-group toolbar-left">
+    <label for="apiarySelect" style="font-weight: 600; white-space: nowrap;">Select Apiary:</label>
+    <select id="apiarySelect" class="styled-select" aria-live="polite"></select>
+
+    <button id="openApiaryNotesBtn" class="toolbar-btn">Apiary Notes</button>
+
+    <span id="toolbarApiaryCounts" class="toolbar-count"></span>
+  </div>
+
+  <!-- CENTER: dropdown menus -->
+  <div class="toolbar-group toolbar-center">
+    <span id="toolbarOverallCounts" class="toolbar-count"></span>
+    <button id="dueInspectionsBtn" class="toolbar-btn-alert" style="display:none; position:relative;">
+<svg class="warning-icon" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- Triangle with black border -->
+  <path d="M1 21h22L12 2 1 21z"
+        fill="#fff"
+        stroke="#dd0000"
+        stroke-width="1" />
+
+  <!-- Exclamation line -->
+  <path d="M12 8v6"
+        stroke="#000"
+        stroke-width="2"
+        stroke-linecap="round" />
+
+  <!-- Exclamation dot -->
+  <circle cx="12" cy="17" r="1.5" fill="#000" />
+</svg>
+
+
+  <span id="dueBadge" class="badge" style="display:none;">0</span>
+</button>
+
+  </div>
+
+
+
+  <!-- RIGHT: empty for now -->
+  <div class="toolbar-group toolbar-right">
+        <div class="dropdown-wrapper">
+      <button id="apiaryMenuBtn" class="toolbar-btn">Apiary ▼</button>
+      <div id="apiaryMenu" class="dropdown-menu">
+        <div class="dropdown-item" id="apiaryNew">New Apiary</div>
+        <div class="dropdown-item" id="apiaryRename">Rename Apiary</div>
+        <div class="dropdown-item" id="apiaryDelete">Delete Apiary</div>
+        <div class="dropdown-item" id="apiaryPrint">Print Apiary</div>
+      </div>
+    </div>
+
+    <div class="dropdown-wrapper">
+      <button id="hivesMenuBtn" class="toolbar-btn">Hives ▼</button>
+
+      <div id="hivesMenu" class="dropdown-menu">
+        <div class="dropdown-item" id="hiveNew">New Hive</div>
+    <!--    <div class="dropdown-item" id="hiveDuplicate">Duplicate Hive</div>-->
+        <div class="dropdown-item" id="hiveDelete">Delete Hive</div>
+    <!--    <div class="dropdown-item" id="hiveReassign">Reassign Hive Number</div>
+        <div class="dropdown-item" id="hivePrint">Print Hive</div>-->
+      </div>
+    </div>
+
+   <div class="dropdown-wrapper">
+      <button id="toolsMenuBtn" class="toolbar-btn">Tools ▼</button>
+
+    <div id="toolsMenu" class="dropdown-menu">
+      <div class="dropdown-item" id="toolsExport">Export Data</div>
+      <div class="dropdown-item" id="toolsImport">Import All Data</div>
+      <div class="dropdown-item" id="toolsStatus">Edit Statuses</div>
+    <!--  <div class="dropdown-item" id="toolsHiveSizes">Edit Hive Sizes</div> -->
+    <!--  <div class="dropdown-item" id="toolsStats">View Stats</div> -->
+      <div class="dropdown-item" id="toolsHelp">Help</div>
+    </div>
+  </div>
+
+
+  </div>
+
+</div>
+
+  <div id="main-container">
+    <div id="canvas-container">
+      <!-- ID must match what canvas.js uses -->
+      <canvas id="hiveCanvas" width="1000" height="550"></canvas>
+    </div>
+
+    <div id="side-panel">
+
+      <div id="queenLegend"></div>
+<!---->
+<div id="legacy-ui" style="display:none">
+
+  <div id="hiveStatsContent"></div>
+  <div id="apiaryNotesList"></div>
+
+  <textarea id="apiaryNoteInput"></textarea>
+  <input type="date" id="apiaryNoteDateInput">
+  <button id="apiaryNoteAddBtn"></button>
+
+  <button id="printBtn"></button>
+  <button id="createApiaryBtn"></button>
+  <button id="renameApiaryBtn"></button>
+  <button id="deleteApiaryBtn"></button>
+
+  <div id="controls">
+    <button id="addHiveBtn"></button>
+    <button id="deleteSelectedBtn"></button>
+  </div>
+
+</div>
+
+      <div id="saveReminder">
+        !! Remember to <strong>Export All Data</strong> before closing the page (save to Google Drive/Hive Map) !!
+      </div>
+    </div>
+  </div>
+
+  <div id="tooltip"></div>
+
+  <div id="overlay" tabindex="-1"></div>
+
+  <!-- Hive edit modal -->
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+  <header class="modal-header">
+    <h3 id="modalTitle">Edit Hive</h3>
+    <button id="modalCloseBtn" class="modal-close">&times;</button>
+  </header>
+
+  <main class="modal-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="modal-column">
+
+      <div class="modal-section">
+        <h4 class="section-title">Hive Details</h4>
+
+        <label for="hiveName">Hive ID</label>
+        <input type="text" id="hiveName" placeholder="Hive Name">
+
+        <label for="hiveType">Hive Type</label>
+        <div class="inline-row">
+          <select id="hiveType"></select>
+          <button type="button" id="addHiveTypeBtn" class="small-add">+</button>
+        </div>
+
+        <label for="lastInspection">This Inspection</label>
+        <input type="date" id="lastInspection">
+
+        <label for="nextInspection">Next Inspection Due</label>
+<input type="date" id="nextInspection">
+
+        <label for="queenStatus">Status</label>
+        <select id="queenStatus"></select>
+      </div>
+
+      <div class="modal-section">
+        <h4 class="section-title">Notes</h4>
+        <textarea id="notes" rows="4" placeholder="Notes about this hive..."></textarea>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="modal-column">
+
+      <div class="modal-section">
+        <h4 class="section-title">Hive Boxes</h4>
+
+        <div id="boxList" class="box-list"></div>
+
+        <div class="inline-row">
+          <select id="boxTypeSelect"></select>
+          <input id="boxCountInput" type="number" min="1" value="1">
+          <button type="button" id="addBoxBtn" class="small-add">+</button>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <h4 class="section-title">Inspection History</h4>
+        <ul id="inspectionHistoryList" class="inspection-list"></ul>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="modal-footer">
+    <button id="saveHiveBtn" class="primary">Save</button>
+    <button id="cancelHiveBtn" class="secondary">Cancel</button>
+  </footer>
+</div>
+
+
+  <!-- Status settings modal -->
+<div id="statusModal" style="display:none;">
+  <header class="modal-header">
+    <h3>Statuses</h3>
+    <button id="closeStatusSettingsBtn" class="modal-close" type="button">&times;</button>
+  </header>
+
+  <main class="modal-body">
+    <div class="modal-column">
+      <div class="modal-section">
+        <h4 class="section-title">Statuses</h4>
+
+        <!-- JS fully controls this list -->
+        <div id="statusList"></div>
+
+        <div style="margin-top:10px; text-align:right;">
+          <button id="addStatusBtn" class="small-add" type="button">+</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="modal-footer">
+    <button id="saveStatusSettingsBtn" class="primary" type="button">Save</button>
+    <button id="closeStatusSettingsBtn2" class="secondary" type="button">Cancel</button>
+  </footer>
+</div>
+
+<div id="apiaryNotesModal" class="modal">
+  <div class="modal-content">
+    <button id="closeApiaryNotesBtn" class="modal-close">&times;</button>
+
+    <h2>Apiary Notes</h2>
+
+    <div id="apiaryNotesListModal"></div>
+
+<div class="apiary-note-add">
+  <div class="form-row">
+    <label for="apiaryNoteInputModal">New note</label>
+    <textarea id="apiaryNoteInputModal" rows="4" placeholder="Write your note…"></textarea>
+  </div>
+
+  <div class="form-row">
+    <label for="apiaryNoteDateInputModal">Date</label>
+    <input id="apiaryNoteDateInputModal" type="date">
+  </div>
+
+  <div class="form-row">
+    <button id="apiaryNoteAddBtnModal" class="btn">Add</button>
+  </div>
+</div>
+
+
+  </div>
+</div>
+
+<div id="apiaryNotesOverlay" class="modal-overlay"></div>
+
+
+
+  <!-- Hive size modal -->
+  <div id="hiveSizeOverlay" class="modal-overlay" style="display:none;"></div>
+<div id="hiveSizeModal" style="display:none;">
+  <header class="modal-header">
+    <h3>Create Hive</h3>
+    <button id="hiveSizeCloseBtn" class="modal-close">&times;</button>
+  </header>
+
+  <main class="modal-body">
+    <div class="modal-column">
+
+      <div class="modal-section">
+
+        <label for="hiveSizeSelect">Size</label>
+        <select id="hiveSizeSelect">
+          <option value="40x40">Standard Hive (40×40)</option>
+          <option value="40x20">Nuc (40×20)</option>
+          <option value="30x30">Mini (30×30)</option>
+          <option value="custom">Custom</option>
+        </select>
+
+        <div id="customSizeFields" style="display:none;">
+          <label for="hiveWidthInput">Width (px)</label>
+          <input type="number" id="hiveWidthInput" min="1" placeholder="e.g. 40">
+
+          <label for="hiveHeightInput">Height (px)</label>
+          <input type="number" id="hiveHeightInput" min="1" placeholder="e.g. 40">
+        </div>
+
+        <label for="hiveNameInput">Name/Number</label>
+        <input type="text" id="hiveNameInput" placeholder="e.g. 12">
+
+        <div id="usedHiveNumbers" class="used-hive-numbers"></div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="modal-footer">
+    <button id="confirmCreateHiveBtn" class="primary">Add</button>
+    <button id="cancelCreateHiveBtn" class="secondary">Cancel</button>
+  </footer>
+</div>
+
+<!-- Inspections Due Modal -->
+<!-- Inspections Due Modal -->
+<div id="dueInspectionsModal" role="dialog" aria-modal="true" aria-labelledby="dueInspectionsTitle" aria-describedby="dueInspectionsDesc" style="display:none;">
+  <header class="modal-header">
+    <h3 id="dueInspectionsTitle">Due Inspections</h3>
+    <button id="closeDueInspectionsBtn" class="modal-close">&times;</button>
+  </header>
+    <div class="inline-row" style="margin-top:10px; margin-left:16px;">
+  <label>
+    <input type="checkbox" id="filterNext7"> Show only next 7 days
+  </label>
+</div>
+  <main class="modal-body">
+
+
+    <ul id="dueInspectionsList" class="inspection-list"></ul>
+  </main>
+
+  <footer class="modal-footer">
+    <button id="closeDueInspectionsBtn2" class="secondary">Close</button>
+  </footer>
+</div>
+
+
+<!-- HELP MODAL -->
+ <div id="helpOverlay" class="modal-overlay" style="display:none;"></div>
+<div id="helpModal" class="modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+  <header class="modal-header">
+    <h3 id="helpModalTitle">Help & Guide</h3>
+    <button id="helpModalCloseBtn" class="modal-close">&times;</button>
+  </header>
+
+  <main class="modal-body">
+    <h3>Getting Started - the Toolbar</h3>
+    <p>Use <strong>Select Apiary</strong> in the toolbar, or create a new apiary using the <strong>Apiary</strong> menu.</p>
+    <p>Click <strong>Apiary Notes</strong> to see and add notes for the selected apiary.</p>
+    <p><strong>Apiary Count</strong> shows the number of hives for the selected apiary separately for hives where status is not equal to Query and for hives where status equals Query.</p>
+    <p><strong>Total Count</strong> shows the total number of hives across all apiaries.</p>
+    <p>If any hives have a <strong>Next Inspection Date</strong> set, <svg class="warning-icon" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- Triangle with black border -->
+  <path d="M1 21h22L12 2 1 21z"
+        fill="#fff"
+        stroke="#dd0000"
+        stroke-width="1" />
+
+  <!-- Exclamation line -->
+  <path d="M12 8v6"
+        stroke="#000"
+        stroke-width="2"
+        stroke-linecap="round" />
+
+  <!-- Exclamation dot -->
+  <circle cx="12" cy="17" r="1.5" fill="#000" />
+</svg>appears with the number of hives with due inspections.<br>
+    Click this to show a list of hives with due inspections grouped by apiary and ordered by date</p>
+    <p>Use the <strong>Apiary</strong> menu to:<br>
+     - Create a <strong>New Apiary</strong>.<br>
+     - <strong>Rename Apiary</strong> that is selected.<br>
+     - <strong>Delete Apiary</strong> that is selected.<br>
+     - <strong>Print Apiary</strong> that is selected which opens a print window to print the apiary layout and cards for each hive.</p>
+    <p>Use the <strong>Hives</strong> menu to:<br>
+     - Create a <strong>New Hive</strong>.<br>
+     - <strong>Delete Hive</strong> that is selected.</p>
+    <p>Use the <strong>Tools</strong> menu to:<br>
+     - <strong>Export Data</strong> (save all your apiaries and hives to a JSON file).<br>
+     - <strong>Import All Data</strong> (load from a previously exported JSON file).<br>
+     - <strong>Edit Status Colours</strong> to create or edit hive statuses and their colours.<br>
+     - Open this <strong>Help</strong> panel.</p>
+    
+    <h4>Editing Hives</h4>
+    <p>Double-click a hive to open its inspection panel. Add boxes, notes, and inspection history.</p>
+
+    <h4>Notes</h4>
+    <p>Use the “Apiary Notes” button in the toolbar to record notes for the whole apiary.</p>
+
+    <h4>Status Colours</h4>
+    <p>Edit hive status colours from Tools → Edit Status Colours.</p>
+
+    <h4>Saving Your Data</h4>
+    <p>Use Tools → Export Data to save everything before closing. Import restores your full setup.</p>
+
+  </main>
+
+  <footer class="modal-footer">
+    <button id="helpModalCloseBtn2" class="secondary">Close</button>
+  </footer>
+</div>
+
+  </div>
+
+  <!-- Service worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registered'))
+        .catch(err => console.error('SW registration failed:', err));
+    }
+  </script>
+
+  <!-- Accordion behaviour -->
+  <script>
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.classList.toggle('active');
+        const content = header.nextElementSibling;
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+      });
+    });
+  </script>
+<input type="file" id="importAllFile" accept="application/json" style="display:none">
+<button id="importAllBtn" style="display:none"></button>
+<script src="js/toolbar.js"></script>
+</body>
+</html>
