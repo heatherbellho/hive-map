@@ -1,10 +1,10 @@
 const cacheName = 'hive-map-cache-v1';
 const filesToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icons/192-hive-map.png',
-  './icons/512-hive-map.png',
+  './hive-map/',
+  './hive-map/index.html',
+  './hive-map/manifest.json',
+  './hive-map/icons/192-hive-map.png',
+  './hive-map/icons/512-hive-map.png',
   'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js'
 ];
 
@@ -19,4 +19,5 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(resp => resp || fetch(event.request))
   );
 });
+
 
