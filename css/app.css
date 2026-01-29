@@ -404,6 +404,11 @@ button.save:hover {
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
 }
+#hiveCanvas { 
+  width: 1000px; /* match your logical canvas width */ 
+  max-width: none; 
+  display: block; 
+}
 
 @media (max-width: 900px) {
   #main-container {
