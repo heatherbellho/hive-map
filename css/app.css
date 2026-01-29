@@ -376,7 +376,7 @@ button.save:hover {
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  align-items: flex-start;
+  align-items: stretch;
   padding: 10px;
   box-sizing: border-box;
 }
@@ -413,7 +413,7 @@ button.save:hover {
 @media (max-width: 900px) {
   #main-container {
     flex-direction: column;
-    align-items: center;
+align-items: stretch;
   }
   
   #side-panel {
@@ -425,10 +425,10 @@ button.save:hover {
   }
   
 #canvas-container {
-  width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS/Android */
+  touch-action: pan-x;
   align-self: stretch;
 }
 
