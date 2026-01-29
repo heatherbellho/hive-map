@@ -1195,3 +1195,5 @@ body {
 #addBoxBtn {
   flex: 0 0 auto;   /* button stays natural size */
 }
+
+#canvas-container { background: #8bb667; /* your green */ } #hiveCanvas { background: rgba(255, 0, 0, 0.3); /* translucent red overlay */ }
