@@ -433,6 +433,12 @@ align-items: stretch;
 }
 
 }
+#canvas-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
 
 .panel-group {
   margin-bottom: 18px;
