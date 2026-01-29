@@ -376,7 +376,7 @@ button.save:hover {
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
-  align-items: stretch;
+  align-items: flex-start;
   padding: 10px;
   box-sizing: border-box;
 }
@@ -413,7 +413,7 @@ button.save:hover {
 @media (max-width: 900px) {
   #main-container {
     flex-direction: column;
-align-items: stretch;
+    align-items: center;
   }
   
   #side-panel {
@@ -425,19 +425,12 @@ align-items: stretch;
   }
   
 #canvas-container {
+  width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS/Android */
-  touch-action: pan-x;
-  align-self: stretch;
 }
 
-}
-#canvas-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
 }
 
 .panel-group {
@@ -1200,10 +1193,4 @@ body {
 
 #addBoxBtn {
   flex: 0 0 auto;   /* button stays natural size */
-}
-#canvas-container {
-  border: 4px solid red;
-}
-canvas {
-  border: 4px solid blue;
 }
