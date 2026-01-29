@@ -419,10 +419,13 @@ button.save:hover {
     align-items: center;
   }
   
-  #canvas-container {
-    width: 100%;
-    overflow-x: auto;
-  }
+#canvas-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS/Android */
+}
+
 }
 
 .panel-group {
