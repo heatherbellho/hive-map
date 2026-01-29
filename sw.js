@@ -3,8 +3,8 @@ const filesToCache = [
   './',
   './index.html',
   './manifest.json',
-  './icons/hive-192.png',
-  './icons/hive-512.png',
+  './icons/192-hive-map.png',
+  './icons/512-hive-map.png',
   'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js'
 ];
 
@@ -19,3 +19,4 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(resp => resp || fetch(event.request))
   );
 });
+
