@@ -9,12 +9,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icons/16_favicon-fudge.png",
+      "src": "/heatherbellho.github.io/icons/192-hive-map.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/16_favicon-fudge.png",
+      "src": "/heatherbellho.github.io/icons/512-hive-map.png",
       "sizes": "512x512",
       "type": "image/png"
     }
