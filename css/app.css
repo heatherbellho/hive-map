@@ -377,7 +377,7 @@ button.save:hover {
   max-width: 1400px;
   margin: 0 auto;
   align-items: flex-start;
-  padding: 20px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
@@ -1196,19 +1196,4 @@ body {
 
 #addBoxBtn {
   flex: 0 0 auto;   /* button stays natural size */
-}
-#canvas-container {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
-  pointer-events: auto;
-  position: relative;
-  z-index: 1;
-}
-.canvas-container canvas,
-.canvas-container .upper-canvas,
-.canvas-container .lower-canvas {
-  pointer-events: none;
 }
