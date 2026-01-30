@@ -371,29 +371,6 @@ button.save:hover {
   background: #357ABD;
 }
 
-#main-container {
-  display: flex;
-  gap: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
-  align-items: flex-start;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-#canvas-container {
-  flex-shrink: 0;
-  background: #8bb667;
-}
-
-#side-panel {
-  display: flex;
-  flex-direction: column;
-  min-width: 280px;
-  max-width: 320px;
-  font-family: sans-serif;
-}
-
 #queenLegend {
   display: flex;
   flex-wrap: wrap;
@@ -408,32 +385,6 @@ button.save:hover {
   width: 1000px; /* match your logical canvas width */ 
   max-width: none; 
   display: block; 
-}
-
-@media (max-width: 900px) {
-  #main-container {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  #side-panel {
-    width: 100%;
-    max-width: none;
-    min-width: auto;
-    margin-top: 20px;
-    align-items: center;
-  }
-  
-#canvas-container {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
-  align-self: stretch;
-  display: block;
-}
-
-
 }
 
 .panel-group {
@@ -1197,4 +1148,60 @@ body {
 
 #addBoxBtn {
   flex: 0 0 auto;   /* button stays natural size */
+}
+/* ------------------------------------------------------------
+   Desktop / Large screens (default)
+------------------------------------------------------------ */
+#main-container {
+  display: flex;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: flex-start;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#canvas-container {
+  flex-shrink: 0;
+  background: #8bb667;
+}
+
+#side-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+  max-width: 320px;
+  font-family: sans-serif;
+}
+
+/* ------------------------------------------------------------
+   Mobile / Small screens (stack vertically)
+------------------------------------------------------------ */
+@media (max-width: 900px) {
+  #main-container {
+    flex-direction: column;
+    align-items: center; /* center both sections */
+  }
+
+  /* Canvas goes full width and scrolls horizontally if needed */
+  #canvas-container {
+    width: 100%;
+    align-self: stretch;
+    display: block;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+
+  /* Side panel drops below canvas and expands */
+  #side-panel {
+    width: 100%;
+    max-width: none;
+    min-width: auto;
+    margin-top: 20px;
+    align-items: center;
+  }
 }
