@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
   <link rel="icon" type="image/png" sizes="16x16" href="icons/16_favicon-fudge.png">
-  <link rel="manifest" href="/hive-map/manifest-v2.json">
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#719454">
 
   <title>Hive Map with Inspection Data</title>
@@ -121,10 +121,12 @@
 </div>
 
   <div id="main-container">
+    
     <div id="canvas-container">
       <!-- ID must match what canvas.js uses -->
-      <canvas id="hiveCanvas" width="1000" height="550"></canvas>
-    </div>
+
+        <canvas id="hiveCanvas" width="1000" height="550"></canvas>
+      </div>
 
     <div id="side-panel">
 
@@ -154,10 +156,7 @@
       <div id="saveReminder">
         !! Remember to <strong>Export All Data</strong> before closing the page (save to Google Drive/Hive Map) !!
       </div>
-      <div id="copyright">
-        <small>&copy; 2026 Hive Map - <a href="https://cornishhoney.co.uk" target="_blank"><strong>Heather Bell Honey Bees Ltd</strong></a></small>
-      </div>
-
+      <div><small>&copy; 2026 Hive Map - <a href="https://cornishhoney.co.uk" target="_blank"><strong>Heather Bell Honey Bees Ltd</strong></a></small></div>
     </div>
   </div>
 
@@ -169,7 +168,11 @@
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
   <header class="modal-header">
     <h3 id="modalTitle">Edit Hive</h3>
+    <div>
+        <button id="saveHiveBtn" class="modal-header-btn-save">Save</button>
+    <button id="cancelHiveBtn" class="modal-header-btn-cancel">Cancel</button>
     <button id="modalCloseBtn" class="modal-close">&times;</button>
+    </div>
   </header>
 
   <main class="modal-body">
