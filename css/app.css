@@ -1175,7 +1175,7 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   align-items: flex-start;
-  padding: 10px;
+  padding: 30px;
   box-sizing: border-box;
 }
 
@@ -1203,8 +1203,8 @@ body {
 
   /* Canvas goes full width and scrolls horizontally if needed */
   #canvas-container {
-    width: 100%;
-    align-self: stretch;
+    width: 1000px;
+   /* align-self: stretch;*/
     display: block;
 
     overflow-x: auto;
@@ -1218,8 +1218,6 @@ body {
     width: 100%;
     max-width: none;
     min-width: auto;
-    margin-top: 20px;
     align-items: center;
   }
 }
-
