@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#fff9eb",
   "theme_color": "#719454",
-  "orientation": "portrait",
+  "orientation": "any",
   "icons": [
     {
       "src": "/hive-map/icons/192-hive-map.png",
