@@ -954,6 +954,7 @@ body {
   flex-wrap: wrap;   /* allow rows */
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   background: #FFE3A4;
   padding: 8px 20px;
   color: #763d0e;
