@@ -152,23 +152,47 @@ App.Status.closeSettings = function () {
 // Add a new status
 // ------------------------------------------------------------
 App.Status.addStatus = function () {
-  queenStatuses.push({ name: "New Status", color: "#cccccc" });
-  Storage.saveQueenStatuses(queenStatuses);
-  App.Status.openSettings();
-  App.Status.renderLegend();
-  App.Status.populateStatusSelect();
+  // Hide the + button while adding
+  document.getElementById("addStatusBtn").style.display = "none";
+
+  const modal = document.getElementById("statusModal");
+  const list = document.getElementById("statusList");
+
+  if (!modal || !list) return;
+
+  list.innerHTML = `
+    <div class="status-row">
+      <input type="text" id="newStatusName" placeholder="Status name">
+      <input type="color" id="newStatusColor" value="#cccccc">
+    </div>
+  `;
+
+  modal.style.display = "block";
+  document.getElementById("overlay").style.display = "block";
 };
+
 
 // ------------------------------------------------------------
 // Save status settings
 // ------------------------------------------------------------
 App.Status.saveSettings = function () {
+  const nameEl = document.getElementById("newStatusName");
+  const colorEl = document.getElementById("newStatusColor");
+
+  if (nameEl && colorEl) {
+    const name = nameEl.value.trim();
+    const color = colorEl.value;
+    if (name) queenStatuses.push({ name, color });
+  }
+
   Storage.saveQueenStatuses(queenStatuses);
   App.Status.renderLegend();
   App.Status.populateStatusSelect();
   App.Status.closeSettings();
-};
 
+  // Restore + button
+  document.getElementById("addStatusBtn").style.display = "inline-block";
+};
 // ------------------------------------------------------------
 // Initialise status system
 // ------------------------------------------------------------

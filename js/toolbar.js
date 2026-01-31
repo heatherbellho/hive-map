@@ -84,6 +84,11 @@ document.getElementById("hiveDelete").addEventListener("click", () => {
   App.Canvas.deleteSelected();
 });
 
+document.getElementById("hivesArchived").addEventListener("click", () => {
+  closeAllMenus();
+  App.Modals.openArchivedHives();
+});
+
 // ============================================================
 //  TOOLS MENU
 // ============================================================
@@ -122,25 +127,32 @@ document.getElementById("toolsStatus").addEventListener("click", () => {
  // App.Stats.open();
 //});
 
-const helpBtn = document.getElementById("toolsHelp");
-const helpOverlay = document.getElementById("helpOverlay");
-const helpModal = document.getElementById("helpModal");
+document.addEventListener("DOMContentLoaded", () => {
+  const helpBtn = document.getElementById("toolsHelp");
+  const overlay = document.getElementById("overlay");
+  const helpModal = document.getElementById("helpModal");
 
-const closeHelp = () => {
-  helpOverlay.style.display = "none";
-  helpModal.style.display = "none";
-};
+  const closeHelp = () => {
+    overlay.style.display = "none";
+    helpModal.style.display = "none";
+  };
 
-if (helpBtn && helpOverlay && helpModal) {
-  helpBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    closeAllMenus();
-    helpOverlay.style.display = "block";
-    helpModal.style.display = "block";
-  });
+  if (helpBtn && overlay && helpModal) {
+    helpBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closeAllMenus();
+      overlay.style.display = "block";
+      helpModal.style.display = "block";
+    });
 
-  document.getElementById("helpModalCloseBtn").addEventListener("click", closeHelp);
-  document.getElementById("helpModalCloseBtn2").addEventListener("click", closeHelp);
-  helpOverlay.addEventListener("click", closeHelp);
-}
+    const closeBtn1 = document.getElementById("helpModalCloseBtn");
+    const closeBtn2 = document.getElementById("helpModalCloseBtnFooter");
+
+    if (closeBtn1) closeBtn1.addEventListener("click", closeHelp);
+    if (closeBtn2) closeBtn2.addEventListener("click", closeHelp);
+
+    overlay.addEventListener("click", closeHelp);
+  }
+});
+
 

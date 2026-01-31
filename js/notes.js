@@ -145,6 +145,7 @@ App.Notes.add = function () {
   dateEl.value = "";
 
   App.Notes.render(notes);
+  App.Notes.closeModal();
 };
 
 
@@ -153,13 +154,22 @@ App.Notes.add = function () {
 // ------------------------------------------------------------
 App.Notes.openModal = function () {
   document.getElementById("apiaryNotesModal").style.display = "block";
-  document.getElementById("apiaryNotesOverlay").style.display = "block";
+  document.getElementById("overlay").style.display = "block";
+
   App.Notes.load();
+
+  // Clear the correct input
+  const input = document.getElementById("apiaryNoteInputModal");
+  if (input) input.value = "";
+
+  // Optional: clear date too
+  const dateInput = document.getElementById("apiaryNoteDateInputModal");
+  if (dateInput) dateInput.value = "";
 };
 
 App.Notes.closeModal = function () {
   document.getElementById("apiaryNotesModal").style.display = "none";
-  document.getElementById("apiaryNotesOverlay").style.display = "none";
+  document.getElementById("overlay").style.display = "none";
 };
 
 App.Notes.init = function () {
@@ -179,7 +189,7 @@ if (addBtnModal) addBtnModal.addEventListener("click", App.Notes.add);
   const closeBtn = document.getElementById("closeApiaryNotesBtn");
   if (closeBtn) closeBtn.addEventListener("click", App.Notes.closeModal);
 
-  const overlay = document.getElementById("apiaryNotesOverlay");
+  const overlay = document.getElementById("overlay");
   if (overlay) overlay.addEventListener("click", App.Notes.closeModal);
 };
 
