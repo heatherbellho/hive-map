@@ -10,9 +10,6 @@ App.Modals = {};
 let selectedHive = null;   // Fabric group currently being edited
 
 
-// ------------------------------------------------------------
-// Open the hive edit modal
-// ------------------------------------------------------------
 App.Modals.openHiveModal = function (hiveGroup) {
   selectedHive = hiveGroup;
   const data = hiveGroup.hiveData || {};
@@ -26,25 +23,51 @@ App.Modals.openHiveModal = function (hiveGroup) {
   App.Hives.populateTypeSelect(data.hiveType || "");
   document.getElementById("lastInspection").value = "";
   document.getElementById("nextInspection").value = data.nextInspectionDate || "";
-
   document.getElementById("notes").value = "";
 
   // Latest inspection
   const latest = data.inspections[data.inspections.length - 1] || {};
-  //document.getElementById("lastInspection").value = latest.date || "";
- // document.getElementById("notes").value = latest.notes || "";
-
- 
-
-  // Populate queen status dropdown and select current status
   App.Status.populateStatusSelect(latest.queenStatus || "");
 
-
-  // Render boxes
+  // Render boxes + inspection history
   App.Modals.renderBoxList();
-
-  // Render inspection history
   App.Modals.renderInspectionHistory();
+
+  // 🔹 Show correct archive/restore button and wire handlers
+  const archiveBtn = document.getElementById("archiveHiveBtn");
+  const restoreBtn = document.getElementById("restoreHiveBtn");
+
+  if (archiveBtn && restoreBtn) {
+    if (data.status === "archived") {
+      archiveBtn.style.display = "none";
+      restoreBtn.style.display = "inline-block";
+    } else {
+      archiveBtn.style.display = "inline-block";
+      restoreBtn.style.display = "none";
+    }
+
+    archiveBtn.onclick = function () {
+      if (!selectedHive) return;
+
+      selectedHive.hiveData.status = "archived";
+      selectedHive.visible = false;
+
+      App.Canvas.saveLayout();
+      App.Canvas.requestRender();
+      App.Modals.closeHiveModal();
+    };
+
+    restoreBtn.onclick = function () {
+      if (!selectedHive) return;
+
+      selectedHive.hiveData.status = "active";
+      selectedHive.visible = true;
+
+      App.Canvas.saveLayout();
+      App.Canvas.requestRender();
+      App.Modals.closeHiveModal();
+    };
+  }
 
   // Show modal
   document.getElementById("modal").style.display = "block";
@@ -360,6 +383,49 @@ document.getElementById("overlay").style.display = "none";
 
 };
 
+App.Modals.openArchivedHives = function () {
+  const list = document.getElementById("archivedHivesList");
+  list.innerHTML = "";
+
+  const archived = canvas.getObjects().filter(o =>
+    o.hiveData && o.hiveData.status === "archived"
+  );
+
+  if (archived.length === 0) {
+    list.innerHTML = "<li>No archived hives.</li>";
+  } else {
+    archived.forEach(obj => {
+      const li = document.createElement("li");
+      li.style.marginBottom = "6px";
+
+li.innerHTML = `
+  ${obj.hiveData.name}
+  <button class="small-btn viewArchivedBtn">View</button>
+  <button class="small-btn restoreArchivedBtn">Restore</button>
+`;
+
+
+      li.querySelector(".restoreArchivedBtn").onclick = () => {
+        obj.hiveData.status = "active";
+        obj.visible = true;
+        App.Canvas.saveLayout();
+        App.Canvas.requestRender();
+        App.Modals.openArchivedHives(); // refresh list
+        App.Stats.update();
+      };
+li.querySelector(".viewArchivedBtn").onclick = () => {
+  selectedHive = obj;
+  App.Modals.openHiveModal(obj);
+};
+
+      list.appendChild(li);
+    });
+  }
+
+  document.getElementById("overlay").style.display = "block";
+  document.getElementById("archivedHivesModal").style.display = "block";
+};
+
 // ------------------------------------------------------------
 // Initialise modal system
 // ------------------------------------------------------------
@@ -378,10 +444,15 @@ App.Modals.init = function () {
 
   // Box add button
   document.getElementById("addBoxBtn").addEventListener("click", App.Modals.addBox);
-  document.getElementById("closeDueInspectionsBtn")
-  .addEventListener("click", App.Modals.closeDueInspections);
+  document.getElementById("closeDueInspectionsBtn").addEventListener("click", App.Modals.closeDueInspections);
 
-document.getElementById("closeDueInspectionsBtn2")
-  .addEventListener("click", App.Modals.closeDueInspections);
+  document.getElementById("closeDueInspectionsBtn2").addEventListener("click", App.Modals.closeDueInspections);
+  document.getElementById("hivesArchived").addEventListener("click", App.Modals.openArchivedHives);
+document.getElementById("closeArchivedHivesBtn")
+  .addEventListener("click", () => {
+    document.getElementById("archivedHivesModal").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+  });
+
 
 };
