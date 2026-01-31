@@ -99,6 +99,9 @@
         <div class="dropdown-item" id="hiveDelete">Delete Hive</div>
     <!--    <div class="dropdown-item" id="hiveReassign">Reassign Hive Number</div>
         <div class="dropdown-item" id="hivePrint">Print Hive</div>-->
+        <div class="dropdown-separator"></div>
+<div class="dropdown-item" id="hivesArchived">Archived Hives…</div>
+
       </div>
     </div>
 
@@ -236,7 +239,26 @@
   <footer class="modal-footer">
     <button id="saveHiveBtn" class="primary">Save</button>
     <button id="cancelHiveBtn" class="secondary">Cancel</button>
+    <button id="archiveHiveBtn" class="danger-btn" style="display:none;">Archive Hive</button>
+<button id="restoreHiveBtn" class="primary-btn" style="display:none;">Restore Hive</button>
+
   </footer>
+</div>
+
+<!-- Archived Hives list -->
+
+<div id="archivedHivesModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Archived Hives</h2>
+<div id="archivedHivesScroll">
+  <ul id="archivedHivesList"></ul>
+</div>
+
+
+    <div class="modal-footer">
+      <button id="closeArchivedHivesBtn" class="toolbar-btn">Close</button>
+    </div>
+  </div>
 </div>
 
 
