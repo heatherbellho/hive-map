@@ -173,6 +173,8 @@
   <header class="modal-header">
     <h2 id="modalTitle">Edit Hive</h2>
     <div>
+          <button id="archiveHiveBtn" class="btn-danger" style="display:none;">Archive Hive</button>
+    <button id="restoreHiveBtn" class="btn-primary" style="display:none;">Restore Hive</button>
       <button id="saveHiveBtn" class="btn-save">Save</button>
       <button id="cancelHiveBtn" class="btn-cancel" style="margin-right: 12px;">Cancel</button>
       <button id="modalCloseBtn" class="modal-close">&times;</button>
@@ -238,10 +240,9 @@
   </main>
 
   <footer class="modal-footer">
-    <button id="saveHiveBtnFooter" class="primary">Save</button>
-    <button id="cancelHiveBtnFooter" class="secondary">Cancel</button>
-    <button id="archiveHiveBtn" class="danger-btn" style="display:none;">Archive Hive</button>
-    <button id="restoreHiveBtn" class="primary-btn" style="display:none;">Restore Hive</button>
+    <button id="saveHiveBtnFooter" class="btn-save">Save</button>
+    <button id="cancelHiveBtnFooter" class="btn-cancel">Cancel</button>
+
   </footer>
 </div>
 
@@ -255,7 +256,7 @@
     </div>
 
     <div class="modal-footer">
-      <button id="closeArchivedHivesBtn" class="toolbar-btn">Close</button>
+      <button id="closeArchivedHivesBtn" class="btn-cancel">Close</button>
     </div>
   </div>
 

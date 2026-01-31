@@ -29,7 +29,7 @@ App.Stats.update = function () {
     objects.forEach(obj => {
       const hive = obj?.hiveData;
       if (!hive) return;
-
+      if (hive.status === "archived") return;
       let status = "";
 
       // Last inspection status

@@ -737,7 +737,7 @@ body {
   flex-wrap: wrap;   /* allow rows */
   justify-content: space-between;
   align-items: center;
-  /*width: 100%;*/
+
   background: #FFE3A4;
   padding: 8px 20px;
   color: #763d0e;
@@ -1132,11 +1132,26 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
+.btn-danger {
+  background: #c93535;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-primary {
+  background: #3566c9;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 .btn-cancel {
     background: #ddd;
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
-
 }

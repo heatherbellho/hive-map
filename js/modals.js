@@ -400,20 +400,24 @@ App.Modals.openArchivedHives = function () {
 
 li.innerHTML = `
   ${obj.hiveData.name}
-  <button class="small-btn viewArchivedBtn">View</button>
-  <button class="small-btn restoreArchivedBtn">Restore</button>
+  <button class="btn-save viewArchivedBtn">View</button>
+  <button class="btn-primary restoreArchivedBtn">Restore</button>
 `;
 
 
       li.querySelector(".restoreArchivedBtn").onclick = () => {
+        
         obj.hiveData.status = "active";
         obj.visible = true;
+        obj.on("mousedblclick", () => App.Modals.openHiveModal(obj));
         App.Canvas.saveLayout();
         App.Canvas.requestRender();
         App.Modals.openArchivedHives(); // refresh list
+        App.Modals.closeArchivedHives();
         App.Stats.update();
       };
 li.querySelector(".viewArchivedBtn").onclick = () => {
+  App.Modals.closeArchivedHives();
   selectedHive = obj;
   App.Modals.openHiveModal(obj);
 };
@@ -424,6 +428,11 @@ li.querySelector(".viewArchivedBtn").onclick = () => {
 
   document.getElementById("overlay").style.display = "block";
   document.getElementById("archivedHivesModal").style.display = "block";
+};
+
+App.Modals.closeArchivedHives = function () {
+  document.getElementById("archivedHivesModal").style.display = "none";
+  document.getElementById("overlay").style.display = "none";
 };
 
 // ------------------------------------------------------------
@@ -448,11 +457,6 @@ App.Modals.init = function () {
 
   document.getElementById("closeDueInspectionsBtn2").addEventListener("click", App.Modals.closeDueInspections);
   document.getElementById("hivesArchived").addEventListener("click", App.Modals.openArchivedHives);
-document.getElementById("closeArchivedHivesBtn")
-  .addEventListener("click", () => {
-    document.getElementById("archivedHivesModal").style.display = "none";
-    document.getElementById("overlay").style.display = "none";
-  });
-
+document.getElementById("closeArchivedHivesBtn").addEventListener("click", App.Modals.closeArchivedHives);
 
 };
