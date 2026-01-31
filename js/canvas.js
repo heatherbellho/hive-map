@@ -87,7 +87,8 @@ App.Canvas.createHive = function (name, width, height) {
       name,
       hiveType: "Hive",
       inspections: [],
-      boxes: []
+      boxes: [],
+      status: "active"
     }
   });
 
@@ -139,7 +140,10 @@ App.Canvas.saveLayout = function () {
   const current = Storage.getCurrentApiary();
   if (!current) return;
 
-  const json = JSON.stringify(canvas.toJSON(["hiveData"]));
+const json = JSON.stringify(
+  canvas.toJSON(["hiveData", "visible"])
+);
+
   Storage.saveHiveLayout(current, json);
 };
 
@@ -159,14 +163,30 @@ App.Canvas.loadLayout = function () {
     return;
   }
 
-  canvas.loadFromJSON(json, () => {
-    canvas.getObjects().forEach(obj => {
-      if (obj.type === "group" && obj.hiveData) {
-        obj.on("mousedblclick", () => App.Modals.openHiveModal(obj));
+canvas.loadFromJSON(json, () => {
+  canvas.getObjects().forEach(obj => {
+    if (obj.type === "group" && obj.hiveData) {
+
+      // 🔹 Ensure status exists (from Step 1)
+      if (!obj.hiveData.status) {
+        obj.hiveData.status = "active";
       }
-    });
-    App.Canvas.requestRender();
+
+      // 🔹 Hide archived hives from the canvas
+      if (obj.hiveData.status === "archived") {
+        obj.visible = false;
+        return;
+      }
+
+      // Normal behaviour for active hives
+      obj.on("mousedblclick", () => App.Modals.openHiveModal(obj));
+    }
   });
+
+  App.Canvas.requestRender();
+});
+
+
 };
 
 
